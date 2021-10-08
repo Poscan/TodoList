@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:ToDoList.Model;assembly=ToDoList"
+             xmlns:viewModel="clr-namespace:ToDoList.ViewModel;assembly=ToDoList"
+             x:Class="ToDoList.View.MainPage"
+             x:DataType="viewModel:MainPageViewModel">
+
+    <StackLayout Padding="10">
+        <Label Text="Todo List" FontSize="20" TextColor="Black" />
+        <Grid ColumnDefinitions="9*, *">
+            <Frame BorderColor="Black" Padding="3" HeightRequest="70" CornerRadius="10">
+                <Entry FontSize="20" x:Name="Name" />
+            </Frame>
+            <Button Grid.Column="1" Text="+" BackgroundColor="DarkGreen" FontSize="25"
+                    Command="{Binding CreateTaskCommand}"
+                    CommandParameter="{Binding Source={x:Reference Name=Name}, Path=Text}" />
+        </Grid>
+        <ListView ItemsSource="{Binding TaskList}">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="model:Task">
+                    <ViewCell>
+                        <ViewCell.View>
+                            <Frame Padding="2" Margin="2" BackgroundColor="Azure" x:Name="ListItem">
+                                <Frame.Triggers>
+                                    <DataTrigger Binding="{Binding IsComplete}" Value="True" TargetType="Frame">
+                                        <Setter Property="Frame.BackgroundColor" Value="DarkSeaGreen" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsComplete}" Value="False" TargetType="Frame">
+                                        <Setter Property="Frame.BackgroundColor" Value="Azure" />
+                                    </DataTrigger>
+                                </Frame.Triggers>
+                                <Grid ColumnDefinitions="1*, 9*, *">
+                                    <CheckBox IsChecked="{Binding IsComplete}" />
+                                    <Label Grid.Column="1" Text="{Binding Name}" TextColor="Black" />
+                                    <Button Grid.Column="2" Text="D" BackgroundColor="DarkRed"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewModel:MainPageViewModel}}, Path=DeleteTaskCommand}" CommandParameter="{Binding .}" />
+                                </Grid>
+                            </Frame>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
+</ContentPage>
